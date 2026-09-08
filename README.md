@@ -1,35 +1,33 @@
-# study
+The repo has 2 parts:
 
-Repo gồm 2 phần:
+- `server/` — Express API (code already included)
+- `client/` — Frontend (you need to create it yourself, see instructions below)
 
-- `server/` — Express API (đã có sẵn code)
-- `client/` — Frontend (bạn cần tự tạo, xem hướng dẫn bên dưới)
-
-## Yêu cầu
+## Requirements
 
 - [Node.js](https://nodejs.org/) >= 18
-- npm (đi kèm Node.js)
+- npm (comes with Node.js)
 
-## 1. Tạo folder `client`
+## 1. Create the `client` folder
 
-Nếu bạn clone repo lần đầu, thư mục `client/` sẽ chưa có project frontend bên trong. Hãy tạo nó bằng Vite (React + TypeScript):
+If this is your first time cloning the repo, the `client/` folder won't have a frontend project inside yet. Create one with Vite (React + TypeScript):
 
 ```bash
-# chạy ở thư mục gốc của repo
+# run from the repo root
 npm create vite@latest client -- --template react-ts
 cd client
 npm install
 ```
 
-> Nếu `client/` đã tồn tại (rỗng), lệnh trên vẫn dùng được — Vite sẽ scaffold project vào đúng thư mục đó.
+> If `client/` already exists (empty), the command above still works — Vite will scaffold the project into that same folder.
 
-Chạy dev server của client:
+Run the client's dev server:
 
 ```bash
 npm run dev
 ```
 
-## 2. Chạy server Express
+## 2. Run the Express server
 
 ```bash
 cd server
@@ -37,30 +35,30 @@ npm install
 npm run dev
 ```
 
-- `npm run dev` — chạy bằng `nodemon`, tự restart khi sửa code (dùng khi phát triển)
-- `npm start` — chạy bằng `node`, không tự restart (dùng khi chạy thật)
+- `npm run dev` — runs via `nodemon`, auto-restarts on code changes (use during development)
+- `npm start` — runs via `node`, no auto-restart (use for production)
 
-Sau khi chạy, server lắng nghe tại `http://localhost:4100` (có thể đổi qua biến môi trường `PORT`):
+Once running, the server listens at `http://localhost:4100` (can be changed via the `PORT` environment variable):
 
 - API: `http://localhost:4100/api/...`
 - Health check: `http://localhost:4100/health`
 - Swagger docs: `http://localhost:4100/api-docs`
 
-## Cấu trúc thư mục
+## Folder structure
 
 ```
 study/
-├── client/    # Frontend (tự tạo theo hướng dẫn ở trên)
+├── client/    # Frontend (create it following the instructions above)
 └── server/    # Express API
     └── src/
         ├── server.js       # Entry point
-        ├── swagger.js      # Cấu hình Swagger
-        ├── routes/         # Các route (auth, hello, me...)
+        ├── swagger.js      # Swagger configuration
+        ├── routes/         # Routes (auth, hello, me...)
         ├── middleware/      # Middleware (auth...)
         ├── store/          # Token store
-        └── data/           # Dữ liệu mẫu (users...)
+        └── data/           # Sample data (users...)
 ```
 
-## Ghi chú
+## Notes
 
-- `node_modules` của cả `client` và `server` đã được `.gitignore` bỏ qua, mỗi lần clone/pull code mới cần chạy lại `npm install` ở từng thư mục.
+- `node_modules` for both `client` and `server` are excluded via `.gitignore` — after every clone/pull, run `npm install` again in each folder.

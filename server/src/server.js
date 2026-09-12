@@ -5,6 +5,7 @@ const swaggerSpec = require('./swagger');
 const helloRoute = require('./routes/hello.route');
 const authRoute = require('./routes/auth.route');
 const meRoute = require('./routes/me.route');
+const employeeRoute = require('./routes/employee.route');
 
 const app = express();
 const PORT = process.env.PORT || 4100;
@@ -23,6 +24,7 @@ app.get('/health', (req, res) => {
 app.use('/', authRoute);
 app.use('/api', helloRoute);
 app.use('/api', meRoute);
+app.use('/api', employeeRoute);
 
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);

@@ -71,7 +71,11 @@ function updateEmployee(id, payload) {
   ];
   editableFields.forEach((field) => {
     if (payload[field] !== undefined) {
-      employee[field] = payload[field];
+      if (field === 'role') {
+        employee[field] = payload[field] === 'admin' ? 'admin' : 'employee';
+      } else {
+        employee[field] = payload[field];
+      }
     }
   });
 

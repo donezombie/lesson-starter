@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { findUser } = require('../data/users');
+const { findUser } = require('../data/employees');
 const { createToken, revokeToken } = require('../store/tokenStore');
 const requireAuth = require('../middleware/auth.middleware');
 

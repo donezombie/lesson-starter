@@ -1,7 +1,7 @@
 const express = require('express');
 
 const requireAuth = require('../middleware/auth.middleware');
-const { findByUsername, toPublicProfile } = require('../data/users');
+const { findByUsername, toPublicProfile } = require('../data/employees');
 
 const router = express.Router();
 

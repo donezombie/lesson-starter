@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const express = require('express');
+const cors = require('cors');
 // Patches Express's router so a rejected promise from any `async` route
 // handler is automatically forwarded to the error-handling middleware
 // below, instead of becoming an unhandled rejection that crashes the
@@ -21,6 +22,9 @@ const { connectMongo } = require('./store/mongoClient');
 
 const app = express();
 const PORT = process.env.PORT || 4100;
+
+// Enable CORS for all origins so any client can call this API.
+app.use(cors());
 
 app.use(express.json());
 

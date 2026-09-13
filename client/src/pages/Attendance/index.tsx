@@ -63,7 +63,7 @@ const Attendance = () => {
             <Button
               onClick={handleCheckIn}
               isLoading={isCheckingIn}
-              disabled={!!todayOpenRecord}
+              disabled={!!todayOpenRecord || isCheckingIn}
             >
               Check in
             </Button>
@@ -71,7 +71,7 @@ const Attendance = () => {
               variant="outline"
               onClick={handleCheckOut}
               isLoading={isCheckingOut}
-              disabled={!todayOpenRecord}
+              disabled={!todayOpenRecord || isCheckingOut}
             >
               Check out
             </Button>

@@ -1,3 +1,5 @@
-const queriesKeys = {};
+const queriesKeys = {
+  getEmployees: "getEmployees",
+};
 
 export default queriesKeys;

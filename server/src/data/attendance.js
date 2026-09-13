@@ -1,14 +1,18 @@
-const fileStore = require('../store/fileStore');
+const { getDb, nextId, omitMongoId, omitMongoIdMany } = require('../store/mongoClient');
+
+function collection() {
+  return getDb().collection('attendance');
+}
 
 function todayDate() {
   return new Date().toISOString().slice(0, 10);
 }
 
-function checkIn(employeeId) {
-  const db = fileStore.read();
-  const openRecord = db.attendance.find(
-    (a) => a.employeeId === employeeId && a.checkOut === null
-  );
+async function checkIn(employeeId) {
+  const openRecord = await collection().findOne({
+    employeeId,
+    checkOut: null,
+  });
   if (openRecord) {
     const error = new Error('Already checked in, check out first');
     error.status = 400;
@@ -16,38 +20,41 @@ function checkIn(employeeId) {
   }
 
   const record = {
-    id: fileStore.nextId(db, 'attendance'),
+    id: await nextId('attendance'),
     employeeId,
     date: todayDate(),
     checkIn: new Date().toISOString(),
     checkOut: null,
   };
 
-  db.attendance.push(record);
-  fileStore.write(db);
-  return record;
+  await collection().insertOne(record);
+  return omitMongoId(record);
 }
 
-function checkOut(employeeId) {
-  const db = fileStore.read();
-  const record = db.attendance.find(
-    (a) => a.employeeId === employeeId && a.checkOut === null
-  );
+async function checkOut(employeeId) {
+  const record = await collection().findOne({
+    employeeId,
+    checkOut: null,
+  });
   if (!record) {
     const error = new Error('No open check-in found');
     error.status = 400;
     throw error;
   }
 
-  record.checkOut = new Date().toISOString();
-  fileStore.write(db);
-  return record;
+  const checkOutTime = new Date().toISOString();
+  await collection().updateOne(
+    { id: record.id },
+    { $set: { checkOut: checkOutTime } }
+  );
+
+  return omitMongoId({ ...record, checkOut: checkOutTime });
 }
 
-function listAttendance({ employeeId } = {}) {
-  const db = fileStore.read();
-  if (employeeId === undefined) return db.attendance;
-  return db.attendance.filter((a) => a.employeeId === Number(employeeId));
+async function listAttendance({ employeeId } = {}) {
+  const query = employeeId === undefined ? {} : { employeeId: Number(employeeId) };
+  const records = await collection().find(query).toArray();
+  return omitMongoIdMany(records);
 }
 
 module.exports = { checkIn, checkOut, listAttendance };

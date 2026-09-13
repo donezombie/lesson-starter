@@ -1,7 +1,16 @@
 # HRM cơ bản — Thiết kế
 
 **Ngày:** 2026-09-12
-**Trạng thái:** Approved (chờ viết implementation plan)
+**Trạng thái:** Approved; đã triển khai xong 13 task + final review (xem
+`docs/superpowers/plans/2026-09-12-hrm-basic.md` và ledger tại
+`.superpowers/sdd/2026-09-12-hrm-basic/progress.md`).
+
+**Cập nhật sau final review:** phần "Attendance — admin xem tất cả / filter
+theo nhân viên" (§4.5, §5.4) — backend đã hỗ trợ `?employeeId=` nhưng UI filter
+theo nhân viên trên trang Attendance **chưa được xây** (task brief bỏ sót khi
+lập kế hoạch). Admin vẫn xem được toàn bộ bản ghi, chỉ chưa lọc được theo từng
+nhân viên. Chấp nhận làm scope cut cho lượt này; có thể bổ sung sau như một
+task riêng nếu cần.
 
 ## 1. Mục tiêu & phạm vi
 

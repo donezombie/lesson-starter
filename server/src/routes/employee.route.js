@@ -25,8 +25,8 @@ const router = express.Router();
  *       403:
  *         description: Caller is not an admin
  */
-router.get('/employees', requireAuth, requireRole('admin'), (req, res) => {
-  res.json(listEmployees());
+router.get('/employees', requireAuth, requireRole('admin'), async (req, res) => {
+  res.json(await listEmployees());
 });
 
 /**
@@ -62,7 +62,7 @@ router.get('/employees', requireAuth, requireRole('admin'), (req, res) => {
  *       403:
  *         description: Caller is not an admin
  */
-router.post('/employees', requireAuth, requireRole('admin'), (req, res) => {
+router.post('/employees', requireAuth, requireRole('admin'), async (req, res) => {
   const { username, password, fullName, email } = req.body || {};
   if (!username || !password || !fullName || !email) {
     return res
@@ -71,7 +71,7 @@ router.post('/employees', requireAuth, requireRole('admin'), (req, res) => {
   }
 
   try {
-    const employee = createEmployee(req.body);
+    const employee = await createEmployee(req.body);
     res.status(201).json(employee);
   } catch (error) {
     res.status(error.status || 400).json({ message: error.message });
@@ -99,8 +99,8 @@ router.post('/employees', requireAuth, requireRole('admin'), (req, res) => {
  *       403:
  *         description: Caller is not an admin
  */
-router.put('/employees/:id', requireAuth, requireRole('admin'), (req, res) => {
-  const employee = updateEmployee(req.params.id, req.body || {});
+router.put('/employees/:id', requireAuth, requireRole('admin'), async (req, res) => {
+  const employee = await updateEmployee(req.params.id, req.body || {});
   if (!employee) {
     return res.status(404).json({ message: 'Employee not found' });
   }
@@ -130,12 +130,12 @@ router.put('/employees/:id', requireAuth, requireRole('admin'), (req, res) => {
  *       403:
  *         description: Caller is not an admin
  */
-router.delete('/employees/:id', requireAuth, requireRole('admin'), (req, res) => {
+router.delete('/employees/:id', requireAuth, requireRole('admin'), async (req, res) => {
   if (Number(req.params.id) === req.user.id) {
     return res.status(400).json({ message: 'You cannot delete your own account' });
   }
 
-  const deleted = deleteEmployee(req.params.id);
+  const deleted = await deleteEmployee(req.params.id);
   if (!deleted) {
     return res.status(404).json({ message: 'Employee not found' });
   }

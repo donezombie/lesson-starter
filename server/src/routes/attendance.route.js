@@ -19,9 +19,9 @@ const router = express.Router();
  *       400:
  *         description: Already checked in
  */
-router.post('/attendance/check-in', requireAuth, (req, res) => {
+router.post('/attendance/check-in', requireAuth, async (req, res) => {
   try {
-    const record = checkIn(req.user.id);
+    const record = await checkIn(req.user.id);
     res.status(201).json(record);
   } catch (error) {
     res.status(error.status || 400).json({ message: error.message });
@@ -42,9 +42,9 @@ router.post('/attendance/check-in', requireAuth, (req, res) => {
  *       400:
  *         description: No open check-in found
  */
-router.post('/attendance/check-out', requireAuth, (req, res) => {
+router.post('/attendance/check-out', requireAuth, async (req, res) => {
   try {
-    const record = checkOut(req.user.id);
+    const record = await checkOut(req.user.id);
     res.json(record);
   } catch (error) {
     res.status(error.status || 400).json({ message: error.message });
@@ -68,13 +68,13 @@ router.post('/attendance/check-out', requireAuth, (req, res) => {
  *       200:
  *         description: List of attendance records
  */
-router.get('/attendance', requireAuth, (req, res) => {
+router.get('/attendance', requireAuth, async (req, res) => {
   if (req.user.role === 'admin') {
     const { employeeId } = req.query;
-    return res.json(listAttendance({ employeeId }));
+    return res.json(await listAttendance({ employeeId }));
   }
 
-  res.json(listAttendance({ employeeId: req.user.id }));
+  res.json(await listAttendance({ employeeId: req.user.id }));
 });
 
 module.exports = router;

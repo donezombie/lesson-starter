@@ -4,7 +4,7 @@ const { findByUsername, toPublicProfile } = require('../data/employees');
 // Verifies the "Authorization: Bearer <token>" header against the
 // in-memory token store, then looks up the employee record so req.user
 // carries the full profile (including role) rather than just a username.
-function requireAuth(req, res, next) {
+async function requireAuth(req, res, next) {
   const authHeader = req.headers.authorization || '';
   const [scheme, token] = authHeader.split(' ');
 
@@ -17,14 +17,18 @@ function requireAuth(req, res, next) {
     return res.status(401).json({ message: 'Invalid or expired token' });
   }
 
-  const employee = findByUsername(username);
-  if (!employee) {
-    return res.status(401).json({ message: 'Invalid or expired token' });
-  }
+  try {
+    const employee = await findByUsername(username);
+    if (!employee) {
+      return res.status(401).json({ message: 'Invalid or expired token' });
+    }
 
-  req.user = toPublicProfile(employee);
-  req.token = token;
-  next();
+    req.user = toPublicProfile(employee);
+    req.token = token;
+    next();
+  } catch (error) {
+    res.status(500).json({ message: 'Internal server error' });
+  }
 }
 
 module.exports = requireAuth;

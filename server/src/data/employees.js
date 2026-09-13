@@ -1,36 +1,36 @@
-const fileStore = require('../store/fileStore');
+const { getDb, nextId } = require('../store/mongoClient');
 
-function findUser(username, password) {
-  const db = fileStore.read();
-  return db.employees.find(
-    (e) => e.username === username && e.password === password
-  );
+function collection() {
+  return getDb().collection('employees');
 }
 
-function findByUsername(username) {
-  const db = fileStore.read();
-  return db.employees.find((e) => e.username === username);
+async function findUser(username, password) {
+  return collection().findOne({ username, password });
 }
 
-function findById(id) {
-  const db = fileStore.read();
-  return db.employees.find((e) => e.id === Number(id));
+async function findByUsername(username) {
+  return collection().findOne({ username });
 }
 
-// Returns the employee without the password field, safe to send back to clients.
+async function findById(id) {
+  return collection().findOne({ id: Number(id) });
+}
+
+// Returns the employee without the password field (or Mongo's own _id),
+// safe to send back to clients.
 function toPublicProfile(employee) {
-  const { password, ...publicProfile } = employee;
+  if (!employee) return employee;
+  const { password, _id, ...publicProfile } = employee;
   return publicProfile;
 }
 
-function listEmployees() {
-  const db = fileStore.read();
-  return db.employees.map(toPublicProfile);
+async function listEmployees() {
+  const employees = await collection().find({}).toArray();
+  return employees.map(toPublicProfile);
 }
 
-function createEmployee(payload) {
-  const db = fileStore.read();
-  const exists = db.employees.some((e) => e.username === payload.username);
+async function createEmployee(payload) {
+  const exists = await collection().findOne({ username: payload.username });
   if (exists) {
     const error = new Error('Username already exists');
     error.status = 400;
@@ -38,7 +38,7 @@ function createEmployee(payload) {
   }
 
   const employee = {
-    id: fileStore.nextId(db, 'employees'),
+    id: await nextId('employees'),
     username: payload.username,
     password: payload.password,
     fullName: payload.fullName,
@@ -48,16 +48,15 @@ function createEmployee(payload) {
     department: payload.department || '',
     role: payload.role === 'admin' ? 'admin' : 'employee',
     joinDate: payload.joinDate || new Date().toISOString().slice(0, 10),
+    baseSalary: Number(payload.baseSalary) || 0,
   };
 
-  db.employees.push(employee);
-  fileStore.write(db);
+  await collection().insertOne(employee);
   return toPublicProfile(employee);
 }
 
-function updateEmployee(id, payload) {
-  const db = fileStore.read();
-  const employee = db.employees.find((e) => e.id === Number(id));
+async function updateEmployee(id, payload) {
+  const employee = await collection().findOne({ id: Number(id) });
   if (!employee) return null;
 
   const editableFields = [
@@ -68,29 +67,34 @@ function updateEmployee(id, payload) {
     'department',
     'role',
     'joinDate',
+    'baseSalary',
   ];
+
+  const update = {};
   editableFields.forEach((field) => {
     if (payload[field] !== undefined) {
       if (field === 'role') {
-        employee[field] = payload[field] === 'admin' ? 'admin' : 'employee';
+        update[field] = payload[field] === 'admin' ? 'admin' : 'employee';
+      } else if (field === 'baseSalary') {
+        update[field] = Number(payload[field]) || 0;
       } else {
-        employee[field] = payload[field];
+        update[field] = payload[field];
       }
     }
   });
 
-  fileStore.write(db);
-  return toPublicProfile(employee);
+  if (Object.keys(update).length === 0) {
+    return toPublicProfile(employee);
+  }
+
+  await collection().updateOne({ id: Number(id) }, { $set: update });
+  const updated = await collection().findOne({ id: Number(id) });
+  return toPublicProfile(updated);
 }
 
-function deleteEmployee(id) {
-  const db = fileStore.read();
-  const index = db.employees.findIndex((e) => e.id === Number(id));
-  if (index === -1) return false;
-
-  db.employees.splice(index, 1);
-  fileStore.write(db);
-  return true;
+async function deleteEmployee(id) {
+  const result = await collection().deleteOne({ id: Number(id) });
+  return result.deletedCount > 0;
 }
 
 module.exports = {

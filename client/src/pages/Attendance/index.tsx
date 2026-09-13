@@ -1,6 +1,8 @@
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/PageWrapper";
 import { Button } from "@/components/ui/button";
+import CommonIcons from "@/components/CommonIcons";
 import {
   Table,
   TableBody,
@@ -16,8 +18,14 @@ import { useGetEmployees } from "@/modules/employees";
 
 const Attendance = () => {
   //! State
+  const { t } = useTranslation("shared");
   const { user, isAdmin } = useAuth();
-  const { data: records, isPending } = useGetAttendance();
+  const {
+    data: records,
+    isPending,
+    isFetching,
+    refetch,
+  } = useGetAttendance();
   const { data: employees } = useGetEmployees({ enabled: isAdmin });
   const { mutateAsync: checkIn, isPending: isCheckingIn } = useCheckIn();
   const { mutateAsync: checkOut, isPending: isCheckingOut } = useCheckOut();
@@ -38,7 +46,7 @@ const Attendance = () => {
   const handleCheckIn = async () => {
     try {
       await checkIn();
-      toast("Checked in!", { type: "success" });
+      toast(t("attendance.checkedInToast"), { type: "success" });
     } catch (error) {
       showError(error);
     }
@@ -47,7 +55,7 @@ const Attendance = () => {
   const handleCheckOut = async () => {
     try {
       await checkOut();
-      toast("Checked out!", { type: "success" });
+      toast(t("attendance.checkedOutToast"), { type: "success" });
     } catch (error) {
       showError(error);
     }
@@ -58,14 +66,23 @@ const Attendance = () => {
     <PageWrapper>
       <div className="component:Attendance w-full">
         <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-bold md:text-3xl">Attendance</h1>
+          <h1 className="text-2xl font-bold md:text-3xl">
+            {t("attendance.title")}
+          </h1>
           <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => refetch()}
+              isLoading={isFetching}
+            >
+              <CommonIcons.RefreshCw className="icon" /> {t("common.refresh")}
+            </Button>
             <Button
               onClick={handleCheckIn}
               isLoading={isCheckingIn}
               disabled={!!todayOpenRecord || isCheckingIn}
             >
-              Check in
+              {t("attendance.checkIn")}
             </Button>
             <Button
               variant="outline"
@@ -73,7 +90,7 @@ const Attendance = () => {
               isLoading={isCheckingOut}
               disabled={!todayOpenRecord || isCheckingOut}
             >
-              Check out
+              {t("attendance.checkOut")}
             </Button>
           </div>
         </div>
@@ -81,16 +98,18 @@ const Attendance = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              {isAdmin && <TableHead>Employee</TableHead>}
-              <TableHead>Date</TableHead>
-              <TableHead>Check in</TableHead>
-              <TableHead>Check out</TableHead>
+              {isAdmin && <TableHead>{t("attendance.employee")}</TableHead>}
+              <TableHead>{t("attendance.date")}</TableHead>
+              <TableHead>{t("attendance.checkInTime")}</TableHead>
+              <TableHead>{t("attendance.checkOutTime")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {isPending && (
               <TableRow>
-                <TableCell colSpan={isAdmin ? 4 : 3}>Loading...</TableCell>
+                <TableCell colSpan={isAdmin ? 4 : 3}>
+                  {t("common.loading")}
+                </TableCell>
               </TableRow>
             )}
             {(records || []).map((record) => {

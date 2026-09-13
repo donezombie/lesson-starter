@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { PermissionOptions } from "@/consts/common";
 import { UserInfo } from "@/interfaces/user";
 import { Form, Formik } from "formik";
+import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
 
 export interface EmployeeFormValues {
@@ -36,6 +37,7 @@ interface EmployeeFormDialogProps {
 }
 
 const EmployeeFormDialog = (props: EmployeeFormDialogProps) => {
+  const { t } = useTranslation("shared");
   const { isOpen, toggle, employee, onSubmit } = props;
   const isEditing = !!employee;
 
@@ -61,12 +63,14 @@ const EmployeeFormDialog = (props: EmployeeFormDialogProps) => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {isEditing ? "Edit employee" : "Add employee"}
+              {isEditing
+                ? t("employees.dialogEditTitle")
+                : t("employees.dialogAddTitle")}
             </DialogTitle>
             <DialogDescription>
               {isEditing
-                ? "Update this employee's profile"
-                : "Create a new employee account"}
+                ? t("employees.dialogEditDesc")
+                : t("employees.dialogAddDesc")}
             </DialogDescription>
           </DialogHeader>
 
@@ -74,15 +78,15 @@ const EmployeeFormDialog = (props: EmployeeFormDialogProps) => {
             enableReinitialize
             initialValues={initialValues}
             validationSchema={Yup.object().shape({
-              username: Yup.string().required("Username is required"),
+              username: Yup.string().required(t("employees.usernameRequired")),
               password: isEditing
                 ? Yup.string()
-                : Yup.string().required("Password is required"),
-              fullName: Yup.string().required("Full name is required"),
+                : Yup.string().required(t("employees.passwordRequired")),
+              fullName: Yup.string().required(t("employees.fullNameRequired")),
               email: Yup.string()
-                .email("Invalid email")
-                .required("Email is required"),
-              role: Yup.mixed().required("Role is required"),
+                .email(t("employees.emailInvalid"))
+                .required(t("employees.emailRequired")),
+              role: Yup.mixed().required(t("employees.roleRequired")),
             })}
             onSubmit={onSubmit}
           >
@@ -92,7 +96,7 @@ const EmployeeFormDialog = (props: EmployeeFormDialogProps) => {
                   <FormikField
                     component={InputField}
                     name="username"
-                    label="Username"
+                    label={t("employees.username")}
                     required
                     disabled={isEditing}
                   />
@@ -101,47 +105,47 @@ const EmployeeFormDialog = (props: EmployeeFormDialogProps) => {
                       component={InputField}
                       name="password"
                       type="password"
-                      label="Password"
+                      label={t("employees.password")}
                       required
                     />
                   )}
                   <FormikField
                     component={InputField}
                     name="fullName"
-                    label="Full name"
+                    label={t("employees.fullName")}
                     required
                   />
                   <FormikField
                     component={InputField}
                     name="email"
-                    label="Email"
+                    label={t("employees.email")}
                     required
                   />
                   <FormikField
                     component={InputField}
                     name="phone"
-                    label="Phone"
+                    label={t("employees.phone")}
                   />
                   <FormikField
                     component={InputField}
                     name="position"
-                    label="Position"
+                    label={t("employees.position")}
                   />
                   <FormikField
                     component={InputField}
                     name="department"
-                    label="Department"
+                    label={t("employees.department")}
                   />
                   <FormikField
                     component={SelectField}
                     name="role"
-                    label="Role"
+                    label={t("employees.role")}
                     required
                     options={PermissionOptions}
                   />
 
                   <Button type="submit" isLoading={isSubmitting}>
-                    Save
+                    {t("common.save")}
                   </Button>
                 </Form>
               );

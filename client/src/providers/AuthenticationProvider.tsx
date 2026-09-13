@@ -5,6 +5,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { useTranslation } from "react-i18next";
 import { PERMISSION_ENUM } from "@/consts/common";
 import httpService from "@/services/httpService";
 import { UserInfo } from "@/interfaces/user";
@@ -41,6 +42,7 @@ export const useAuth = () => useContext(AuthenticationContext);
 
 const AuthenticationProvider = ({ children }: { children: any }) => {
   //! State
+  const { t } = useTranslation("shared");
   const [token, setToken] = useState(httpService.getTokenStorage());
   const [user, setUser] = useState<UserInfo | null>(
     httpService.getUserStorage()
@@ -75,12 +77,12 @@ const AuthenticationProvider = ({ children }: { children: any }) => {
         // Clear any token saved before `/api/me` failed, so a stale/invalid
         // token doesn't linger in storage for a subsequent request.
         httpService.clearStorage();
-        showError("Username / Password is not correct!");
+        showError(t("login.loginFailed"));
       } finally {
         setIsLogging(false);
       }
     },
-    []
+    [t]
   );
 
   const logout = useCallback(() => {

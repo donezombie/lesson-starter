@@ -1,8 +1,135 @@
 {
-  "title": "Xin chào",
-  "login": "Đăng nhập",
-  "description": {
-    "part1": "This is a simple example.",
-    "part2": "😉"
+  "common": {
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "edit": "Sửa",
+    "delete": "Xóa",
+    "add": "Thêm",
+    "actions": "Thao tác",
+    "refresh": "Làm mới",
+    "loading": "Đang tải...",
+    "close": "Đóng",
+    "yes": "Đồng ý",
+    "login": "Đăng nhập",
+    "logout": "Đăng xuất",
+    "changePassword": "Đổi mật khẩu",
+    "somethingWrong": "Đã có lỗi xảy ra"
+  },
+  "login": {
+    "title": "Đăng nhập",
+    "subtitle1": "Nhập tên đăng nhập và mật khẩu bên dưới",
+    "subtitle2": "để vào tài khoản của bạn",
+    "username": "Tên đăng nhập",
+    "usernamePlaceholder": "Nhập tên đăng nhập",
+    "password": "Mật khẩu",
+    "passwordPlaceholder": "Nhập mật khẩu",
+    "forgotPassword": "Quên mật khẩu?",
+    "usernameRequired": "Tên đăng nhập là bắt buộc!",
+    "passwordRequired": "Mật khẩu là bắt buộc!",
+    "loginFailed": "Sai tên đăng nhập hoặc mật khẩu!"
+  },
+  "forgotPassword": {
+    "title": "Quên mật khẩu",
+    "subtitle1": "Nhập email đã đăng ký và",
+    "subtitle2": "chúng tôi sẽ gửi link đặt lại mật khẩu.",
+    "email": "Email",
+    "continue": "Tiếp tục",
+    "haveAccount": "Bạn đã có tài khoản?",
+    "logIn": "Đăng nhập",
+    "usernameRequired": "Tên đăng nhập là bắt buộc!",
+    "passwordRequired": "Mật khẩu là bắt buộc!"
+  },
+  "changePassword": {
+    "title": "Đổi mật khẩu",
+    "newPassword": "Mật khẩu mới",
+    "newPasswordPlaceholder": "Mật khẩu mới",
+    "confirmPassword": "Xác nhận mật khẩu",
+    "confirmPasswordPlaceholder": "Nhập lại mật khẩu mới",
+    "newPasswordRequired": "Mật khẩu mới là bắt buộc!",
+    "confirmPasswordRequired": "Xác nhận mật khẩu là bắt buộc!",
+    "submit": "Xác nhận"
+  },
+  "page404": {
+    "title": "Không tìm thấy trang!",
+    "description1": "Có vẻ như trang bạn đang tìm",
+    "description2": "không tồn tại hoặc đã bị xóa.",
+    "backToHome": "Về trang chủ"
+  },
+  "sidebar": {
+    "general": "Chung",
+    "dashboard": "Trang chủ",
+    "attendance": "Chấm công",
+    "leaveRequests": "Đơn nghỉ phép",
+    "employees": "Nhân viên"
+  },
+  "navbar": {
+    "changePassword": "Đổi mật khẩu",
+    "logout": "Đăng xuất"
+  },
+  "homepage": {
+    "welcome": "Chào mừng, {{name}}",
+    "totalEmployees": "Tổng số nhân viên",
+    "pendingLeaveRequestsAdmin": "Đơn nghỉ phép chờ duyệt",
+    "yourPendingRequests": "Đơn nghỉ phép của bạn",
+    "today": "Hôm nay",
+    "checkedIn": "Đã chấm công",
+    "notCheckedIn": "Chưa chấm công"
+  },
+  "employees": {
+    "title": "Nhân viên",
+    "addEmployee": "Thêm nhân viên",
+    "username": "Tên đăng nhập",
+    "password": "Mật khẩu",
+    "fullName": "Họ tên",
+    "email": "Email",
+    "phone": "Số điện thoại",
+    "position": "Chức danh",
+    "department": "Phòng ban",
+    "role": "Vai trò",
+    "joinDate": "Ngày vào làm",
+    "deleteTitle": "Xóa nhân viên",
+    "deleteConfirm": "Bạn có chắc muốn xóa \"{{name}}\"?",
+    "savedSuccess": "Lưu thành công!",
+    "deletedSuccess": "Xóa thành công!",
+    "dialogAddTitle": "Thêm nhân viên",
+    "dialogEditTitle": "Sửa nhân viên",
+    "dialogAddDesc": "Tạo tài khoản nhân viên mới",
+    "dialogEditDesc": "Cập nhật hồ sơ nhân viên này",
+    "usernameRequired": "Tên đăng nhập là bắt buộc",
+    "passwordRequired": "Mật khẩu là bắt buộc",
+    "fullNameRequired": "Họ tên là bắt buộc",
+    "emailInvalid": "Email không hợp lệ",
+    "emailRequired": "Email là bắt buộc",
+    "roleRequired": "Vai trò là bắt buộc"
+  },
+  "attendance": {
+    "title": "Chấm công",
+    "checkIn": "Chấm công vào",
+    "checkOut": "Chấm công ra",
+    "employee": "Nhân viên",
+    "date": "Ngày",
+    "checkInTime": "Giờ vào",
+    "checkOutTime": "Giờ ra",
+    "checkedInToast": "Chấm công vào thành công!",
+    "checkedOutToast": "Chấm công ra thành công!"
+  },
+  "leaveRequests": {
+    "title": "Đơn nghỉ phép",
+    "fromDate": "Từ ngày",
+    "toDate": "Đến ngày",
+    "reason": "Lý do",
+    "submit": "Gửi đơn",
+    "employee": "Nhân viên",
+    "status": "Trạng thái",
+    "approve": "Duyệt",
+    "reject": "Từ chối",
+    "submittedToast": "Gửi đơn nghỉ phép thành công!",
+    "updatedToast": "Cập nhật thành công!",
+    "statusPending": "Chờ duyệt",
+    "statusApproved": "Đã duyệt",
+    "statusRejected": "Từ chối",
+    "fromDateRequired": "Từ ngày là bắt buộc",
+    "toDateRequired": "Đến ngày là bắt buộc",
+    "reasonRequired": "Lý do là bắt buộc"
   }
 }

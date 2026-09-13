@@ -7,8 +7,8 @@ import { initReactI18next } from "react-i18next";
 import sharedEn from "./en/shared.json";
 import sharedVi from "./vi/shared.json";
 
-const KEY_LANG = "lang";
-const currentLng = localStorage.getItem(KEY_LANG) || LANG_ENUM.en;
+export const KEY_LANG = "lang";
+const currentLng = localStorage.getItem(KEY_LANG) || LANG_ENUM.vi;
 
 export const defaultNS = "shared";
 

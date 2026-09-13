@@ -3,13 +3,16 @@ import { Avatar, AvatarFallback } from "../ui/avatar";
 import { useSidebarHandler } from "@/providers/SidebarProvider";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@/providers/AuthenticationProvider";
 import { Link } from "react-router-dom";
 import BaseUrl from "@/consts/baseUrl";
 import Sidebar from "../Sidebar";
 import ThemeToggle from "../ThemeToggle";
+import LanguageToggle from "../LanguageToggle";
 
 export default function Navbar() {
+  const { t } = useTranslation("shared");
   const { logout, user } = useAuth();
   const { isOpen, toggle } = useSidebarHandler();
 
@@ -31,6 +34,7 @@ export default function Navbar() {
       </Popover>
 
       <div className="flex items-center gap-3">
+        <LanguageToggle />
         <ThemeToggle />
 
         <Popover open={openPopover} onOpenChange={setPopover}>
@@ -54,14 +58,14 @@ export default function Navbar() {
           <PopoverContent className="mr-2 mt-2 flex max-w-[200px] flex-col p-2">
             {[
               {
-                label: "Change password",
+                label: t("navbar.changePassword"),
                 href: BaseUrl.ChangePassword,
                 function: () => {
                   setPopover(false);
                 },
               },
               {
-                label: "Log out",
+                label: t("navbar.logout"),
                 function: () => {
                   setPopover(false);
                   logout();

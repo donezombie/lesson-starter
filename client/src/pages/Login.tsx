@@ -26,8 +26,8 @@ const Login = () => {
     <div className="component:Login flex h-[100vh] w-[100vw] items-center justify-center p-2">
       <Formik
         validationSchema={Yup.object().shape({
-          username: Yup.string().required("Username is required field!"),
-          password: Yup.string().required("Password is required field!"),
+          username: Yup.string().required(t("login.usernameRequired")),
+          password: Yup.string().required(t("login.passwordRequired")),
         })}
         initialValues={{
           username: "",
@@ -57,20 +57,20 @@ const Login = () => {
               <Card className="shadow-md">
                 <CardHeader className="pb-5">
                   <h1 className="text-2xl font-semibold tracking-tight">
-                    Login
+                    {t("login.title")}
                   </h1>
                   <p className="text-sm text-muted-foreground">
-                    Enter your username and password below
+                    {t("login.subtitle1")}
                     <br />
-                    to log into your account
+                    {t("login.subtitle2")}
                   </p>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-5">
                   <FormikField
                     component={InputField}
                     name="username"
-                    label="Username"
-                    placeholder="Enter your username"
+                    label={t("login.username")}
+                    placeholder={t("login.usernamePlaceholder")}
                     required
                   />
 
@@ -78,8 +78,8 @@ const Login = () => {
                     component={InputField}
                     name="password"
                     type="password"
-                    label="Password"
-                    placeholder="Enter your password"
+                    label={t("login.password")}
+                    placeholder={t("login.passwordPlaceholder")}
                     required
                   />
 
@@ -87,11 +87,11 @@ const Login = () => {
                     to={BaseUrl.ForgotPassword}
                     className="is-link text-right text-sm text-muted-foreground"
                   >
-                    Forgot password?
+                    {t("login.forgotPassword")}
                   </Link>
 
                   <Button type="submit" isLoading={isSubmitting}>
-                    <CommonIcons.LogIn className="icon" /> {t("login")}
+                    <CommonIcons.LogIn className="icon" /> {t("common.login")}
                   </Button>
                 </CardContent>
               </Card>

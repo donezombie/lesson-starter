@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/PageWrapper";
 import DialogConfirm from "@/components/dialogs/DialogConfirm";
 import { Button } from "@/components/ui/button";
+import CommonIcons from "@/components/CommonIcons";
 import {
   Table,
   TableBody,
@@ -26,13 +28,19 @@ import EmployeeFormDialog, {
 
 const Employees = () => {
   //! State
+  const { t } = useTranslation("shared");
   const [openForm, toggleForm, shouldRenderForm] = useToggleDialog();
   const [openConfirm, toggleConfirm, shouldRenderConfirm] = useToggleDialog();
   const [selectedEmployee, setSelectedEmployee] = useState<UserInfo | null>(
     null
   );
 
-  const { data: employees, isPending } = useGetEmployees({ enabled: true });
+  const {
+    data: employees,
+    isPending,
+    isFetching,
+    refetch,
+  } = useGetEmployees({ enabled: true });
   const { mutateAsync: createEmployee } = useCreateEmployee();
   const { mutateAsync: updateEmployee } = useUpdateEmployee();
   const { mutateAsync: deleteEmployee } = useDeleteEmployee();
@@ -75,7 +83,7 @@ const Employees = () => {
         });
       }
 
-      toast("Saved successfully!", { type: "success" });
+      toast(t("employees.savedSuccess"), { type: "success" });
       toggleForm();
     } catch (error) {
       showError(error);
@@ -87,7 +95,7 @@ const Employees = () => {
 
     try {
       await deleteEmployee(selectedEmployee.id);
-      toast("Deleted successfully!", { type: "success" });
+      toast(t("employees.deletedSuccess"), { type: "success" });
       toggleConfirm();
     } catch (error) {
       showError(error);
@@ -99,25 +107,38 @@ const Employees = () => {
     <PageWrapper>
       <div className="component:Employees w-full">
         <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-bold md:text-3xl">Employees</h1>
-          <Button onClick={handleOpenCreate}>Add employee</Button>
+          <h1 className="text-2xl font-bold md:text-3xl">
+            {t("employees.title")}
+          </h1>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => refetch()}
+              isLoading={isFetching}
+            >
+              <CommonIcons.RefreshCw className="icon" /> {t("common.refresh")}
+            </Button>
+            <Button onClick={handleOpenCreate}>
+              {t("employees.addEmployee")}
+            </Button>
+          </div>
         </div>
 
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Username</TableHead>
-              <TableHead>Full name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Department</TableHead>
-              <TableHead>Role</TableHead>
-              <TableHead>Actions</TableHead>
+              <TableHead>{t("employees.username")}</TableHead>
+              <TableHead>{t("employees.fullName")}</TableHead>
+              <TableHead>{t("employees.email")}</TableHead>
+              <TableHead>{t("employees.department")}</TableHead>
+              <TableHead>{t("employees.role")}</TableHead>
+              <TableHead>{t("common.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {isPending && (
               <TableRow>
-                <TableCell colSpan={6}>Loading...</TableCell>
+                <TableCell colSpan={6}>{t("common.loading")}</TableCell>
               </TableRow>
             )}
             {(employees || []).map((employee) => {
@@ -133,13 +154,13 @@ const Employees = () => {
                       variant="outline"
                       onClick={() => handleOpenEdit(employee)}
                     >
-                      Edit
+                      {t("common.edit")}
                     </Button>
                     <Button
                       variant="destructive"
                       onClick={() => handleOpenDelete(employee)}
                     >
-                      Delete
+                      {t("common.delete")}
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -162,8 +183,10 @@ const Employees = () => {
         <DialogConfirm
           isOpen={openConfirm}
           toggle={toggleConfirm}
-          title="Delete employee"
-          content={`Are you sure you want to delete "${selectedEmployee?.fullName}"?`}
+          title={t("employees.deleteTitle")}
+          content={t("employees.deleteConfirm", {
+            name: selectedEmployee?.fullName,
+          })}
           onSubmit={handleConfirmDelete}
         />
       )}

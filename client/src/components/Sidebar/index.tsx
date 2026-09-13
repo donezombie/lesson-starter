@@ -3,17 +3,19 @@ import { useSidebarHandler } from "@/providers/SidebarProvider";
 import { useAuth } from "@/providers/AuthenticationProvider";
 import BaseUrl from "@/consts/baseUrl";
 import { Link, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const Sidebar = ({ forMobile }: { forMobile?: boolean }) => {
+  const { t } = useTranslation("shared");
   const location = useLocation();
   const { isOpen } = useSidebarHandler();
   const { isAdmin } = useAuth();
 
   const menuItems = [
-    { label: "Dashboard", href: BaseUrl.Homepage },
-    { label: "Attendance", href: BaseUrl.Attendance },
-    { label: "Leave requests", href: BaseUrl.LeaveRequests },
-    ...(isAdmin ? [{ label: "Employees", href: BaseUrl.Employees }] : []),
+    { label: t("sidebar.dashboard"), href: BaseUrl.Homepage },
+    { label: t("sidebar.attendance"), href: BaseUrl.Attendance },
+    { label: t("sidebar.leaveRequests"), href: BaseUrl.LeaveRequests },
+    ...(isAdmin ? [{ label: t("sidebar.employees"), href: BaseUrl.Employees }] : []),
   ];
 
   return (
@@ -33,7 +35,9 @@ const Sidebar = ({ forMobile }: { forMobile?: boolean }) => {
         </div>
 
         <div className="side-bar__menu mt-8">
-          <h6 className="mb-2 px-3 text-sm text-muted-foreground">General</h6>
+          <h6 className="mb-2 px-3 text-sm text-muted-foreground">
+            {t("sidebar.general")}
+          </h6>
           {menuItems.map((el) => {
             return (
               <Link

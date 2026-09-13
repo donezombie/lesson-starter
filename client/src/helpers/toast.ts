@@ -1,5 +1,6 @@
 import { isString } from "lodash";
 import { toast, ToastOptions } from "react-toastify";
+import i18n from "@/i18n/config";
 
 export const showSuccess = (msg: any, options?: ToastOptions) => {
   if (isString(msg)) {
@@ -10,7 +11,9 @@ export const showSuccess = (msg: any, options?: ToastOptions) => {
   toast.success("Error default");
 };
 
-const DEFAULT_ERROR_MESSAGE = "Something went wrong";
+function defaultErrorMessage() {
+  return i18n.t("common.somethingWrong", { ns: "shared" });
+}
 
 export const showError = (error: any, options?: ToastOptions) => {
   let message: unknown;
@@ -39,7 +42,7 @@ export const showError = (error: any, options?: ToastOptions) => {
   }
 
   if (!message) {
-    message = DEFAULT_ERROR_MESSAGE;
+    message = defaultErrorMessage();
   }
 
   // Never pass anything but a string to toast.error, otherwise react-toastify

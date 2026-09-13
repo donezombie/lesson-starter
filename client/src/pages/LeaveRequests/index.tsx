@@ -1,10 +1,12 @@
 import { toast } from "react-toastify";
 import { Form, Formik } from "formik";
+import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
 import PageWrapper from "@/components/PageWrapper";
 import FormikField from "@/components/customFieldsFormik/FormikField";
 import InputField from "@/components/customFieldsFormik/InputField";
 import { Button } from "@/components/ui/button";
+import CommonIcons from "@/components/CommonIcons";
 import {
   Table,
   TableBody,
@@ -24,8 +26,14 @@ import { useGetEmployees } from "@/modules/employees";
 
 const LeaveRequests = () => {
   //! State
+  const { t } = useTranslation("shared");
   const { user, isAdmin } = useAuth();
-  const { data: requests, isPending } = useGetLeaveRequests();
+  const {
+    data: requests,
+    isPending,
+    isFetching,
+    refetch,
+  } = useGetLeaveRequests();
   const { data: employees } = useGetEmployees({ enabled: isAdmin });
   const { mutateAsync: createLeaveRequest } = useCreateLeaveRequest();
   const { mutateAsync: updateStatus } = useUpdateLeaveRequestStatus();
@@ -39,13 +47,19 @@ const LeaveRequests = () => {
     );
   };
 
+  const statusLabel = (status: string) => {
+    if (status === "approved") return t("leaveRequests.statusApproved");
+    if (status === "rejected") return t("leaveRequests.statusRejected");
+    return t("leaveRequests.statusPending");
+  };
+
   const handleDecision = async (
     id: number,
     status: "approved" | "rejected"
   ) => {
     try {
       await updateStatus({ id, status });
-      toast("Updated!", { type: "success" });
+      toast(t("leaveRequests.updatedToast"), { type: "success" });
     } catch (error) {
       showError(error);
     }
@@ -55,20 +69,33 @@ const LeaveRequests = () => {
   return (
     <PageWrapper>
       <div className="component:LeaveRequests w-full">
-        <h1 className="mb-6 text-2xl font-bold md:text-3xl">Leave requests</h1>
+        <div className="mb-6 flex items-center justify-between">
+          <h1 className="text-2xl font-bold md:text-3xl">
+            {t("leaveRequests.title")}
+          </h1>
+          <Button
+            variant="outline"
+            onClick={() => refetch()}
+            isLoading={isFetching}
+          >
+            <CommonIcons.RefreshCw className="icon" /> {t("common.refresh")}
+          </Button>
+        </div>
 
         {!isAdmin && (
           <Formik
             initialValues={{ fromDate: "", toDate: "", reason: "" }}
             validationSchema={Yup.object().shape({
-              fromDate: Yup.string().required("From date is required"),
-              toDate: Yup.string().required("To date is required"),
-              reason: Yup.string().required("Reason is required"),
+              fromDate: Yup.string().required(
+                t("leaveRequests.fromDateRequired")
+              ),
+              toDate: Yup.string().required(t("leaveRequests.toDateRequired")),
+              reason: Yup.string().required(t("leaveRequests.reasonRequired")),
             })}
             onSubmit={async (values, { resetForm, setSubmitting }) => {
               try {
                 await createLeaveRequest(values);
-                toast("Leave request submitted!", { type: "success" });
+                toast(t("leaveRequests.submittedToast"), { type: "success" });
                 resetForm();
               } catch (error) {
                 showError(error);
@@ -84,24 +111,24 @@ const LeaveRequests = () => {
                     component={InputField}
                     name="fromDate"
                     type="date"
-                    label="From date"
+                    label={t("leaveRequests.fromDate")}
                     required
                   />
                   <FormikField
                     component={InputField}
                     name="toDate"
                     type="date"
-                    label="To date"
+                    label={t("leaveRequests.toDate")}
                     required
                   />
                   <FormikField
                     component={InputField}
                     name="reason"
-                    label="Reason"
+                    label={t("leaveRequests.reason")}
                     required
                   />
                   <Button type="submit" isLoading={isSubmitting}>
-                    Submit request
+                    {t("leaveRequests.submit")}
                   </Button>
                 </Form>
               );
@@ -112,18 +139,20 @@ const LeaveRequests = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              {isAdmin && <TableHead>Employee</TableHead>}
-              <TableHead>From</TableHead>
-              <TableHead>To</TableHead>
-              <TableHead>Reason</TableHead>
-              <TableHead>Status</TableHead>
-              {isAdmin && <TableHead>Actions</TableHead>}
+              {isAdmin && <TableHead>{t("leaveRequests.employee")}</TableHead>}
+              <TableHead>{t("leaveRequests.fromDate")}</TableHead>
+              <TableHead>{t("leaveRequests.toDate")}</TableHead>
+              <TableHead>{t("leaveRequests.reason")}</TableHead>
+              <TableHead>{t("leaveRequests.status")}</TableHead>
+              {isAdmin && <TableHead>{t("common.actions")}</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
             {isPending && (
               <TableRow>
-                <TableCell colSpan={isAdmin ? 6 : 4}>Loading...</TableCell>
+                <TableCell colSpan={isAdmin ? 6 : 4}>
+                  {t("common.loading")}
+                </TableCell>
               </TableRow>
             )}
             {(requests || []).map((request) => {
@@ -135,7 +164,7 @@ const LeaveRequests = () => {
                   <TableCell>{request.fromDate}</TableCell>
                   <TableCell>{request.toDate}</TableCell>
                   <TableCell>{request.reason}</TableCell>
-                  <TableCell>{request.status}</TableCell>
+                  <TableCell>{statusLabel(request.status)}</TableCell>
                   {isAdmin && (
                     <TableCell className="flex gap-2">
                       <Button
@@ -143,7 +172,7 @@ const LeaveRequests = () => {
                         disabled={request.status !== "pending"}
                         onClick={() => handleDecision(request.id, "approved")}
                       >
-                        Approve
+                        {t("leaveRequests.approve")}
                       </Button>
                       <Button
                         size="sm"
@@ -151,7 +180,7 @@ const LeaveRequests = () => {
                         disabled={request.status !== "pending"}
                         onClick={() => handleDecision(request.id, "rejected")}
                       >
-                        Reject
+                        {t("leaveRequests.reject")}
                       </Button>
                     </TableCell>
                   )}

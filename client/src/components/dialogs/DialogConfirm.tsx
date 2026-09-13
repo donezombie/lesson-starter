@@ -40,10 +40,10 @@ const DialogConfirm = (props: DialogConfirmProps) => {
                 <Form>
                   <DialogFooter className="self-end">
                     <Button type="submit" isLoading={isSubmitting}>
-                      {t("yes")}
+                      {t("common.yes")}
                     </Button>
                     <Button variant="ghost" type="button" onClick={toggle}>
-                      {t("close")}
+                      {t("common.close")}
                     </Button>
                   </DialogFooter>
                 </Form>

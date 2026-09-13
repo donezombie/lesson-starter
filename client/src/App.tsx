@@ -59,6 +59,8 @@ const queryClient = new QueryClient({
     queries: {
       refetchOnMount: false,
       refetchOnWindowFocus: false,
+      gcTime: 0,
+      staleTime: 0,
     },
   },
 });

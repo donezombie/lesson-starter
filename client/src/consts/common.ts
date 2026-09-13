@@ -6,14 +6,13 @@ export const LANG_ENUM = {
 export enum PERMISSION_ENUM {
   PUBLIC = 'PUBLIC',
   ADMIN = 'admin',
-  USER = 'user',
-  APP_MANAGER = 'appmanager',
+  EMPLOYEE = 'employee',
 }
 
 export const PermissionOptions = Object.entries(PERMISSION_ENUM)
   .filter((el) => {
-    const [key, value] = el;
-    return key !== PERMISSION_ENUM.PUBLIC && value !== PERMISSION_ENUM.ADMIN;
+    const [, value] = el;
+    return value !== PERMISSION_ENUM.PUBLIC;
   })
   .map((el) => {
     const [key, value] = el;

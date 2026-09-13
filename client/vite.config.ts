@@ -10,4 +10,11 @@ export default defineConfig({
       '@': resolve(import.meta.dirname, './src'),
     },
   },
+  server: {
+    proxy: {
+      '/login': 'http://localhost:4100',
+      '/logout': 'http://localhost:4100',
+      '/api': 'http://localhost:4100',
+    },
+  },
 });

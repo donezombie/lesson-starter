@@ -59,7 +59,7 @@ const Login = () => {
               <Card className="shadow-md">
                 <CardHeader className="pb-5">
                   <h1 className="text-2xl font-semibold tracking-tight">
-                    Login (don / don)
+                    Login
                   </h1>
                   <p className="text-sm text-muted-foreground">
                     Enter your username and password below

@@ -24,11 +24,18 @@ import Loading from "./components/ui/loading";
 import SidebarProvider from "./providers/SidebarProvider";
 import { showError } from "./helpers/toast";
 import BaseUrl from "./consts/baseUrl";
+import { PERMISSION_ENUM } from "./consts/common";
+import withCheckRole from "./HOCs/withCheckRole";
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import DefaultLayout from "./layouts/DefaultLayout";
 import Homepage from "./pages/Homepage";
 import ChangePassword from "./pages/ChangePassword";
+import Employees from "./pages/Employees";
+import Attendance from "./pages/Attendance";
+import LeaveRequests from "./pages/LeaveRequests";
+
+const AdminEmployees = withCheckRole(Employees, [PERMISSION_ENUM.ADMIN]);
 
 const ErrorFallback = ({ error, resetErrorBoundary }: any) => {
   return (
@@ -57,10 +64,6 @@ const queryClient = new QueryClient({
 });
 
 const App = () => {
-  //! State
-
-  //! Function
-
   //! Render
   const renderContent = () => {
     return (
@@ -90,6 +93,9 @@ const App = () => {
           >
             <Route index element={<Homepage />} />
             <Route path={BaseUrl.ChangePassword} element={<ChangePassword />} />
+            <Route path={BaseUrl.Attendance} element={<Attendance />} />
+            <Route path={BaseUrl.LeaveRequests} element={<LeaveRequests />} />
+            <Route path={BaseUrl.Employees} element={<AdminEmployees />} />
           </Route>
 
           <Route path="*" element={<Page404 />} />

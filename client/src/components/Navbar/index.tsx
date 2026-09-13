@@ -1,5 +1,5 @@
 import { Menu, X } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarFallback } from "../ui/avatar";
 import { useSidebarHandler } from "@/providers/SidebarProvider";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { useState } from "react";
@@ -10,7 +10,7 @@ import Sidebar from "../Sidebar";
 import ThemeToggle from "../ThemeToggle";
 
 export default function Navbar() {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const { isOpen, toggle } = useSidebarHandler();
 
   const [openPopover, setPopover] = useState(false);
@@ -37,15 +37,16 @@ export default function Navbar() {
           <PopoverTrigger asChild>
             <div className="navbar__avatar flex items-center gap-2 rounded-md hover:cursor-pointer">
               <Avatar>
-                <AvatarImage src="https://github.com/shadcnee.png" />
-                <AvatarFallback>D</AvatarFallback>
+                <AvatarFallback>
+                  {user?.fullName?.[0]?.toUpperCase() || "U"}
+                </AvatarFallback>
               </Avatar>
               <div>
                 <p className="mb-1 text-sm font-medium leading-none">
-                  donezombie
+                  {user?.fullName}
                 </p>
                 <p className="text-xs leading-none text-muted-foreground">
-                  donezombie@gmail.com
+                  {user?.email}
                 </p>
               </div>
             </div>

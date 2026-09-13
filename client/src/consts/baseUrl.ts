@@ -1,17 +1,12 @@
 const BaseUrl = {
-  // ImportBaseURL
   Homepage: "/",
-  Todos: "/todos",
   Login: "/login",
   Callbacks: "/login/callback",
   Logout: "/logout",
-  AppManagement: "/apps",
 
-  CreateApp: "/create-app",
-
-  Users: "/users",
-  Settings: "/settings",
-  AppConnect: "/app-connect",
+  Employees: "/employees",
+  Attendance: "/attendance",
+  LeaveRequests: "/leave-requests",
 
   ChangePassword: "/change-password",
   ForgotPassword: "/forgot-password",

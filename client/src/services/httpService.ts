@@ -12,8 +12,15 @@ class Services {
     this.axios.defaults.withCredentials = false;
 
     //! Interceptor request
+    // Registered exactly once. Reads the token fresh from storage on every
+    // request so the Authorization header is always correct and synchronous,
+    // with no ordering dependency on any provider effect running first.
     this.axios.interceptors.request.use(
-      function (config) {
+      (config) => {
+        const token = this.getTokenStorage();
+        if (token && config.headers) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
         return config;
       },
       function (error) {
@@ -24,21 +31,6 @@ class Services {
     //! Interceptor response
     this.axios.interceptors.response.use(
       function (config) {
-        return config;
-      },
-      function (error) {
-        return Promise.reject(error);
-      }
-    );
-  }
-
-  attachTokenToHeader(token: string) {
-    this.axios.interceptors.request.use(
-      function (config) {
-        if (config.headers) {
-          // Do something before request is sent
-          config.headers.Authorization = `Bearer ${token}`;
-        }
         return config;
       },
       function (error) {

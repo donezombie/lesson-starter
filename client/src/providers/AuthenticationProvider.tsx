@@ -2,7 +2,6 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -22,7 +21,7 @@ interface AuthenticationContextI {
   }: {
     username: string;
     password: string;
-  }) => void;
+  }) => Promise<void>;
   logout: () => void;
   isAdmin: boolean;
   isEmployee: boolean;
@@ -32,7 +31,7 @@ const AuthenticationContext = createContext<AuthenticationContextI>({
   loading: false,
   isLogged: false,
   user: null,
-  login: () => {},
+  login: () => Promise.resolve(),
   logout: () => {},
   isAdmin: false,
   isEmployee: false,
@@ -49,12 +48,6 @@ const AuthenticationProvider = ({ children }: { children: any }) => {
   const [isLogging, setIsLogging] = useState(false);
 
   //! Function
-  useEffect(() => {
-    if (token) {
-      httpService.attachTokenToHeader(token);
-    }
-  }, [token]);
-
   const login = useCallback(
     async ({ username, password }: { username: string; password: string }) => {
       try {
@@ -65,18 +58,23 @@ const AuthenticationProvider = ({ children }: { children: any }) => {
         });
         const nextToken = loginResponse.data.token;
 
-        httpService.attachTokenToHeader(nextToken);
+        // Persist the token before the next request: the http service's
+        // interceptor reads it fresh from storage on every request, so it
+        // must already be saved for `/api/me` to be sent authenticated.
+        httpService.saveTokenStorage(nextToken);
 
         const meResponse = await httpService.get("/api/me");
         const nextUser = meResponse.data as UserInfo;
 
         setToken(nextToken);
         setUser(nextUser);
-        httpService.saveTokenStorage(nextToken);
         httpService.saveUserStorage(nextUser);
 
         window.location.href = BaseUrl.Homepage;
       } catch (error) {
+        // Clear any token saved before `/api/me` failed, so a stale/invalid
+        // token doesn't linger in storage for a subsequent request.
+        httpService.clearStorage();
         showError("Username / Password is not correct!");
       } finally {
         setIsLogging(false);

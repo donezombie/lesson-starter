@@ -10,23 +10,39 @@ export const showSuccess = (msg: any, options?: ToastOptions) => {
   toast.success("Error default");
 };
 
+const DEFAULT_ERROR_MESSAGE = "Something went wrong";
+
 export const showError = (error: any, options?: ToastOptions) => {
-  if (error?.response) {
-    if (error?.response?.data?.errors) {
-      toast.error(JSON.stringify(error?.response?.data?.errors));
-      return;
-    }
+  let message: unknown;
 
-    if (error?.response?.data?.title) {
-      toast.error(JSON.stringify(error?.response?.data?.title));
-      return;
+  if (isString(error)) {
+    message = error;
+  } else if (error?.response?.data?.message) {
+    // Real backend shape: this repo's Express API always returns `{ message }`.
+    message = error.response.data.message;
+  } else if (error?.response?.data?.errors) {
+    // Fallback for a legacy/other backend shape that might still send this.
+    message = error.response.data.errors;
+  } else if (error?.response?.data?.title) {
+    // Fallback for a legacy/other backend shape that might still send this.
+    message = error.response.data.title;
+  } else if (error?.message) {
+    message = error.message;
+  }
+
+  if (!isString(message)) {
+    try {
+      message = message ? JSON.stringify(message) : undefined;
+    } catch {
+      message = undefined;
     }
   }
 
-  if (isString(error) || isString(error.toString())) {
-    toast.error(error, options);
-    return;
+  if (!message) {
+    message = DEFAULT_ERROR_MESSAGE;
   }
 
-  toast.error("Error default");
+  // Never pass anything but a string to toast.error, otherwise react-toastify
+  // can try to render a raw object/error as a React child and crash the app.
+  toast.error(String(message), options);
 };

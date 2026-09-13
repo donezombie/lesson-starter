@@ -17,7 +17,7 @@ function useFiltersHandler<T>(initialFilters: T & CommonFilters) {
     });
   }, []);
 
-  const handleChangePage = useCallback((event: unknown, newPage: number) => {
+  const handleChangePage = useCallback((_event: unknown, newPage: number) => {
     setFilters((prev) => {
       return (
         prev && {
@@ -42,7 +42,7 @@ function useFiltersHandler<T>(initialFilters: T & CommonFilters) {
   );
 
   const handleRequestSort = useCallback(
-    (event: React.MouseEvent<unknown>, property: keyof any) => {
+    (_event: React.MouseEvent<unknown>, property: keyof any) => {
       setFilters((prev) => {
         if (prev) {
           if ("orderBy" in prev && "order" in prev) {

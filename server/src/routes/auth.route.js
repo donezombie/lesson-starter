@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { findUser } = require('../data/users');
+const { findUser } = require('../data/employees');
 const { createToken, revokeToken } = require('../store/tokenStore');
 const requireAuth = require('../middleware/auth.middleware');
 
@@ -39,10 +39,10 @@ const router = express.Router();
  *       401:
  *         description: Invalid username or password
  */
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
   const { username, password } = req.body || {};
 
-  const user = findUser(username, password);
+  const user = await findUser(username, password);
   if (!user) {
     return res.status(401).json({ message: 'Invalid username or password' });
   }

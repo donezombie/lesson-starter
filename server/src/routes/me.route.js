@@ -1,7 +1,7 @@
 const express = require('express');
 
 const requireAuth = require('../middleware/auth.middleware');
-const { findByUsername, toPublicProfile } = require('../data/users');
+const { findByUsername, toPublicProfile } = require('../data/employees');
 
 const router = express.Router();
 
@@ -41,8 +41,8 @@ const router = express.Router();
  *       404:
  *         description: User for the current token no longer exists
  */
-router.get('/me', requireAuth, (req, res) => {
-  const user = findByUsername(req.user.username);
+router.get('/me', requireAuth, async (req, res) => {
+  const user = await findByUsername(req.user.username);
   if (!user) {
     return res.status(404).json({ message: 'User not found' });
   }

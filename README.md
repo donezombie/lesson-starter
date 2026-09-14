@@ -1,3 +1,5 @@
+https://lesson-starter-1.onrender.com/api-docs/#/
+
 The repo has 2 parts:
 
 - `server/` — Express API (code already included)
